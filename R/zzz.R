@@ -3,6 +3,9 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom sf st_sf st_sfc st_point st_multipolygon st_multilinestring
 
+# Workaround until pull request to main branch made and comitted
+library(dplyr); library(httr); library(jsonlite); library(sf)
+
 generateToken <- function(server, uid, pwd = "", expiration = 5000) {
   # generate auth token from GIS server
   if (pwd == "") pwd <- rstudioapi::askForPassword("pwd")
@@ -110,7 +113,7 @@ getEsriFeatures <- function(queryUrl, fields, where, bbox, token = "", ...) {
     warning("No records match the search criteria.")
     return()
   }
-  idSplits <- split(ids, seq_along(ids) %/% 500)
+  idSplits <- split(ids, seq_along(ids) %/% 50)
 
   results <- lapply(idSplits, getEsriFeaturesByIds, queryUrl, fields, token, ...)
   unlist(results, recursive = FALSE)
